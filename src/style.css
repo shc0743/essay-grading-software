@@ -1,0 +1,16 @@
+a {
+    color: blue;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+a:focus {
+    outline: 2px solid var(--el-color-primary-light-5);
+}
+
+a:active {
+    color: red;
+}
