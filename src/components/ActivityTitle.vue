@@ -15,6 +15,7 @@
 <script setup lang="ts">
 import { ref, onMounted, nextTick } from 'vue';
 import { ArrowLeft } from '@element-plus/icons-vue';
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
     closable: {
@@ -28,14 +29,11 @@ const props = defineProps({
 });
 
 const $emit = defineEmits(['update-title']);
+const router = useRouter()
 
 function back() {
     // @ts-ignore
-    if (history.length > 1 && window.navigation && window.navigation.canGoBack) history.back();
-    else {
-        history.replaceState({}, document.title, '#/');
-        window.dispatchEvent(new HashChangeEvent('hashchange'));
-    }
+    router.back()
 }
 
 onMounted(() => {
