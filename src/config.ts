@@ -1,0 +1,1 @@
+export const project_path = 'https://github.com/shc0743/essay-grading-software';

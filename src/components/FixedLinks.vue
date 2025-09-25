@@ -1,7 +1,5 @@
 <template>
     <div class="fixed-links">
-        <router-link to="/about/">关于</router-link>
-        <router-link to="/login/">登录</router-link>
         <router-link to="/settings/">设置</router-link>
     </div>
 </template>
@@ -15,7 +13,7 @@
     top: 10px;
     right: 10px;
     display: flex;
-    z-index: 1000;
+    z-index: 20;
     background: transparent;
     pointer-events: none;
 }

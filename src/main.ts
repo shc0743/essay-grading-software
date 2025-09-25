@@ -13,4 +13,11 @@ app.use(ElementPlus, {
     locale: zhCn,
 })
 
+import ActivityView from './components/ActivityView.vue'
+import ActivityBody from './components/ActivityBody.vue'
+import ActivityTitle from './components/ActivityTitle.vue'
+app.component('ActivityView', ActivityView)
+app.component('ActivityBody', ActivityBody)
+app.component('ActivityTitle', ActivityTitle)
+
 app.mount('vue-app')

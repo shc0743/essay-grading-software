@@ -17,10 +17,13 @@
     </div>
 </template>
 
-<script lang="js">
-export default {
-    name: 'Welcome'
-}
+<script setup lang="js">
+import { onMounted } from 'vue';
+
+const $emit = defineEmits(['update-title']);
+onMounted(() => {
+    $emit('update-title', '欢迎');
+});
 </script>
 
 <style scoped>
@@ -77,5 +80,9 @@ export default {
 
 .welcome-view .my-card:active {
     --background: #d0d0d0;
+}
+
+.welcome-view .my-card img {
+    border-radius: 10px;
 }
 </style>

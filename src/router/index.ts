@@ -5,7 +5,6 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      name: 'Welcome',
       path: '/welcome/',
       component: () => import('@/components/Welcome.vue'),
     },
@@ -17,6 +16,14 @@ const router = createRouter({
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
       component: NotFound,
+    },
+    {
+      path: '/about/',
+      component: () => import('@/components/About.vue'),
+    },
+    {
+      path: '/settings/',
+      component: () => import('@/components/Settings.vue'),
     },
   ],
 })
