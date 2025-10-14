@@ -8,6 +8,8 @@ import { zhCn } from 'element-plus/es/locales.mjs'
 
 const app = createApp(App)
 
+app.config.globalProperties.app_name = 'essay-grading-software';
+
 app.use(router)
 app.use(ElementPlus, {
     locale: zhCn,

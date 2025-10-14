@@ -25,6 +25,10 @@ const router = createRouter({
       path: '/settings/',
       component: () => import('@/components/Settings.vue'),
     },
+    {
+      path: '/Senadina/',
+      component: () => import('@/components/SenadinaActivity.vue'),
+    },
   ],
 })
 
