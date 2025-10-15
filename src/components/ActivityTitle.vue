@@ -33,7 +33,9 @@ const router = useRouter()
 
 function back() {
     // @ts-ignore
-    router.back()
+    if (window.navigation?.canGoBack === false) 
+        router.push('/')
+    else router.back()
 }
 
 onMounted(() => {

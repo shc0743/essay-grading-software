@@ -7,6 +7,8 @@ import vue from '@vitejs/plugin-vue'
 // import Components from 'unplugin-vue-components/vite'
 // import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
+const chunkDirs = ['activities', 'components', 'views']
+
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
@@ -27,5 +29,26 @@ export default defineConfig({
   build: {
     sourcemap: true,
     chunkSizeWarningLimit: 1500,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('element-plus')) {
+              return 'element-plus'
+            }
+            if (id.includes('vueuse')) {
+              return 'vueuse'
+            }
+            return 'vendor'
+          }
+
+          const chunkRegex = new RegExp(`/(${chunkDirs.join('|')})/(.+?)\\.vue$`)
+          const match = id.match(chunkRegex)
+          if (match) {
+            return `${match[1]}-${match[2].toLowerCase()}`
+          }
+        },
+      },
+    },
   },
 })

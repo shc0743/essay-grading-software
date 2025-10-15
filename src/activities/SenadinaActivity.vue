@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import ActivityBody from './ActivityBody.vue';
-import ActivityTitle from './ActivityTitle.vue';
-import ActivityView from './ActivityView.vue';
 import { ref, onMounted } from 'vue';
 
 const SenadinaText = ref('');

@@ -1,12 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import NotFound from '@/components/NotFound.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/welcome/',
-      component: () => import('@/components/Welcome.vue'),
+      component: () => import('@/activities/WelcomeActivity.vue'),
     },
     {
       path: '/',
@@ -15,19 +14,23 @@ const router = createRouter({
     {
       path: '/:pathMatch(.*)*',
       name: 'NotFound',
-      component: NotFound,
+      component: () => import('@/activities/NotFoundActivity.vue'),
     },
     {
       path: '/about/',
-      component: () => import('@/components/About.vue'),
+      component: () => import('@/activities/AboutActivity.vue'),
     },
     {
       path: '/settings/',
-      component: () => import('@/components/Settings.vue'),
+      component: () => import('@/activities/SettingsActivity.vue'),
     },
     {
       path: '/Senadina/',
-      component: () => import('@/components/SenadinaActivity.vue'),
+      component: () => import('@/activities/SenadinaActivity.vue'),
+    },
+    {
+      path: '/take-photo/',
+      component: () => import('@/activities/TakePhotoActivity.vue'),
     },
   ],
 })

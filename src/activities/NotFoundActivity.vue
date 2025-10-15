@@ -7,7 +7,12 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue';
 
+const emit = defineEmits(['update-title']);
+onMounted(() => {
+    emit('update-title', '页面未找到');
+});
 </script>
 
 <style scoped>
