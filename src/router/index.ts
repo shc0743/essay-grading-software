@@ -32,6 +32,18 @@ const router = createRouter({
       path: '/take-photo/',
       component: () => import('@/activities/TakePhotoActivity.vue'),
     },
+    {
+      path: '/compose/',
+      component: () => import('@/activities/CompositionActivity.vue'),
+    },
+    {
+      path: '/grade/',
+      component: () => import('@/activities/GradeActivity.vue'),
+    },
+    {
+      path: '/recognite/',
+      component: () => import('@/activities/RecognitionActivity.vue'),
+    },
   ],
 })
 

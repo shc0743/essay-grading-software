@@ -8,10 +8,17 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActivityBody: typeof import('./src/components/ActivityBody.vue')['default']
+    ActivityTitle: typeof import('./src/components/ActivityTitle.vue')['default']
+    ActivityView: typeof import('./src/components/ActivityView.vue')['default']
+    DialogView: typeof import('./src/components/DialogView.vue')['default']
+    ElButton: typeof import('element-plus/es')['ElButton']
+    ElCard: typeof import('element-plus/es')['ElCard']
+    ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInput: typeof import('element-plus/es')['ElInput']
+    ElLink: typeof import('element-plus/es')['ElLink']
     FixedLinks: typeof import('./src/components/FixedLinks.vue')['default']
-    NotFound: typeof import('./src/components/NotFound.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    Welcome: typeof import('./src/components/Welcome.vue')['default']
   }
 }

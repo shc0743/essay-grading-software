@@ -2,15 +2,15 @@
     <div class="welcome-view">
         <div class="welcome-view-container">
             <router-link to="/compose/" class="my-card" tabindex="0" role="link">
-                <img width="100" src="/assets/image/composition.png">
+                <img width="100" src="/assets/image.compressed/composition.webp">
                 <span>组卷</span>
             </router-link>
             <router-link to="/grade/" class="my-card" tabindex="0" role="link">
-                <img width="100" src="/assets/image/grading.png">
+                <img width="100" src="/assets/image.compressed/grading.webp">
                 <span>批改</span>
             </router-link>
             <router-link to="/recognite/" class="my-card" tabindex="0" role="link">
-                <img width="100" src="/assets/image/ocr.png">
+                <img width="100" src="/assets/image.compressed/ocr.webp">
                 <span>识别</span>
             </router-link>
         </div>

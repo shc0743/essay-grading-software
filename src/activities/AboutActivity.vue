@@ -6,7 +6,7 @@
             <p>产品名称: <code v-text="app_name"></code></p>
             <p>当前 Endpoint: <span v-text="current_endpoint"></span></p>
             <p>项目地址: <el-link target="_blank" :href="project_path">{{ project_path }}</el-link></p>
-            <p style="display: flex;">
+            <p style="display: flex; align-items: center;">
                 <span style="margin-right: 0.5em;">Egg:</span>
                 <ElInput v-model="egg_input" />
             </p>
