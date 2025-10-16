@@ -47,7 +47,6 @@ import { nextTick, ref, watch } from 'vue'
 import { ElSelect, ElOption, ElButton, ElIcon, ElMessage } from 'element-plus'
 import { VideoCamera, Warning } from '@element-plus/icons-vue'
 import { useDevicesList } from '@vueuse/core'
-import DialogView from '../components/DialogView.vue';
 
 const dialogVisible = ref(false)
 const { videoInputs: cameraDevices, ensurePermissions } = useDevicesList({
