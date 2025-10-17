@@ -10,6 +10,7 @@
                 <span style="margin-right: 0.5em;">Egg:</span>
                 <ElInput v-model="egg_input" />
             </p>
+            <p>用户协议和隐私政策: <el-link href="./agreement.html?view">点击查看</el-link></p>
         </ActivityBody>
     </ActivityView>
 </template>
