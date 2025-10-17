@@ -32,6 +32,10 @@ export default defineConfig({
     sourcemap: true,
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
+      input: {
+        main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        agreement: fileURLToPath(new URL('./agreement.html', import.meta.url)),
+      },
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
