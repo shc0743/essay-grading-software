@@ -25,6 +25,14 @@
 
                 <ElButton @click="router.push('/about/')">打开“关于”页面</ElButton>
             </ElCard>
+
+            <ElCard>
+                <template #header>
+                    测试
+                </template>
+
+                <ElButton @click="router.push('/fs-test/')">文件系统测试</ElButton>
+            </ElCard>
         </ActivityBody>
     </ActivityView>
 </template>

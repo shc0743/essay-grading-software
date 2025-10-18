@@ -13,6 +13,7 @@
                 <span>文本：</span>
                 <ElButton type="primary" plain @click="doInput">录入</ElButton>
                 <ElButton @click="doCopy">复制</ElButton>
+                <ElButton @click="saveToDisk">保存</ElButton>
             </div>
 
             <ElInput type="textarea" class="area" placeholder="文本将显示在这里" v-model="inputText" style="flex: 1; margin-top: 0.5em;" />
@@ -25,7 +26,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import ContentInputView from '../views/ContentInputView.vue'
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import { fs } from '../userdata';
 
 const pageTitle = ref('作文识别');
@@ -58,6 +59,28 @@ const doCopy = () => {
     if (inputText.value) {
         navigator.clipboard.writeText(inputText.value);
         ElMessage.success('复制成功');
+    }
+}
+
+const saveToDisk = async () => {
+    try {
+        const { value } = await ElMessageBox.prompt('请输入文件名', '保存作文', {
+            inputValue: (new Date().getTime()) + '.txt',
+            inputPlaceholder: '请输入文件名',
+            confirmButtonText: '保存',
+            cancelButtonText: '取消',
+        });
+        if (!value) {
+            ElMessage.error('请输入文件名');
+            return;
+        }
+        // ensure dir
+        await fs.mkdir('user/essays', { recursive: true });
+        await fs.writeFile(`user/essays/${value}`, inputText.value);
+        ElMessage.success('保存成功');
+    }
+    catch (error) {
+        ElMessage.error('保存失败: ' + error);
     }
 }
 </script>

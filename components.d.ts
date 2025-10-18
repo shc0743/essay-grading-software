@@ -11,6 +11,7 @@ declare module 'vue' {
     ActivityBody: typeof import('./src/components/ActivityBody.vue')['default']
     ActivityTitle: typeof import('./src/components/ActivityTitle.vue')['default']
     ActivityView: typeof import('./src/components/ActivityView.vue')['default']
+    ElAlert: typeof import('element-plus/es')['ElAlert']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCard: typeof import('element-plus/es')['ElCard']
     ElCheckbox: typeof import('element-plus/es')['ElCheckbox']
