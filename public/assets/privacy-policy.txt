@@ -73,7 +73,7 @@
 <p>我们可能会不时更新本隐私政策。更新后的政策将在本页面发布，并更新生效日期。</p>
 
 <h2>联系我们</h2>
-<p>如果您对本隐私政策有任何疑问，请通过 [请提供联系方式] 与我们联系。</p>
+<p>如果您对本隐私政策有任何疑问，请通过 <a target=_blank href="https://github.com/shc0743/essay-grading-software">https://github.com/shc0743/essay-grading-software</a> 与我们联系。</p>
 
 <hr>
-<p><em>最后更新：2025年10月17日（UTC）</em></p>
+<p><em>最后更新：2025年10月18日（UTC）</em></p>

@@ -7,7 +7,6 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import DialogView from '../components/DialogView.vue';
 
 const props = defineProps({
     modelValue: Boolean

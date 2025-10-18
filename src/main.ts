@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import './style.css'
 import DialogView from 'vue-dialog-view';
-import { AGREEMENT_VERSION, app_name_id } from './config';
+import { AGREEMENT_VERSION, app_name_id, PROMPT_FILES } from './config';
 import { db } from './userdata.ts'
 
 if (await db.get('config', 'agreement.version') !== AGREEMENT_VERSION) {
@@ -24,5 +24,21 @@ import ActivityTitle from './components/ActivityTitle.vue'
 app.component('ActivityView', ActivityView)
 app.component('ActivityBody', ActivityBody)
 app.component('ActivityTitle', ActivityTitle)
+
+// 初始化提示词列表
+import { fs } from './userdata.ts'
+if (!await fs.exists('prompts')) {
+    await fs.mkdir('prompts');
+}
+const loadPrompt = async (name: string) => {
+    if (await fs.exists(`prompts/${name}.txt`)) {
+        return;
+    }
+    const response = await fetch(`/prompts/${name}.txt`);
+    const text = await response.text();
+    await fs.writeFile(`prompts/${name}.txt`, text);
+}
+for (const i of PROMPT_FILES) await loadPrompt(i);
+
 
 app.mount('vue-app')

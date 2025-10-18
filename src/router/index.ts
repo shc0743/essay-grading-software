@@ -44,6 +44,10 @@ const router = createRouter({
       path: '/recognite/',
       component: () => import('@/activities/RecognitionActivity.vue'),
     },
+    {
+      path: '/fs-test/',
+      component: () => import('@/activities/FsTestActivity.vue'),
+    },
   ],
 })
 
