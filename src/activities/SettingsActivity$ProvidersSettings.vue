@@ -88,13 +88,15 @@
                 <form class="dialog-content">
                     <!-- 预设提供商快速选择 -->
                     <div class="preset-section" v-if="!isEditingProvider">
-                        <h4>快速选择预设提供商</h4>
-                        <div class="preset-list">
+                        <h4>快速选择预设提供商&nbsp;<ElCheckbox v-model="showPresetProviders">点击显示</ElCheckbox></h4>
+                        <div class="preset-list" v-show="showPresetProviders">
                             <el-card
                                 v-for="preset in presetProviders"
                                 :key="preset.name"
                                 class="preset-card"
                                 @click="selectPresetProvider(preset)"
+                                tabindex="0" role="button"
+                                @keydown.enter="selectPresetProvider(preset)"
                             >
                                 <div class="preset-content">
                                     <div class="preset-info">
@@ -134,7 +136,7 @@
 
                     <div class="dialog-actions">
                         <el-button @click="providerDialogVisible = false">取消</el-button>
-                        <el-button type="primary" @click="saveProvider" plain>
+                        <el-button type="primary" @click="saveProvider" plain ref="saveProviderBtn">
                             {{ isEditingProvider ? '保存' : '添加' }}
                         </el-button>
                     </div>
@@ -160,6 +162,8 @@ const customProviders = ref([]);
 const providerDialogVisible = ref(false);
 const isEditingProvider = ref(false);
 const editingIndex = ref(-1);
+const showPresetProviders = ref(true);
+const saveProviderBtn = ref(null);
 
 const currentProvider = reactive({
     id: '',
@@ -279,6 +283,8 @@ const selectPresetProvider = (preset) => {
     currentProvider.name = preset.name;
     currentProvider.endpoint = preset.endpoint;
     currentProvider.description = preset.description;
+    // 滚动到可见区域
+    saveProviderBtn.value.ref.scrollIntoView({ behavior: 'smooth' });
 };
 
 const visitPurchasePage = (preset) => {
@@ -424,8 +430,6 @@ const saveServiceConfig = async () => {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 12px;
-    max-height: 200px;
-    overflow-y: auto;
 }
 
 .preset-card {
