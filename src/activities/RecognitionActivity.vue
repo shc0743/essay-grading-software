@@ -11,13 +11,13 @@
 
             <div class="row">
                 <span>文本：</span>
-                <ElButton type="primary" plain @click="showContentInput = true">录入</ElButton>
+                <ElButton type="primary" plain @click="doInput">录入</ElButton>
                 <ElButton @click="doCopy">复制</ElButton>
             </div>
 
-            <ElInput type="textarea" class="area" v-model="inputText" style="flex: 1; margin-top: 0.5em;" />
+            <ElInput type="textarea" class="area" placeholder="文本将显示在这里" v-model="inputText" style="flex: 1; margin-top: 0.5em;" />
 
-            <ContentInputView v-if="showContentInput" v-model="showContentInput" @result="inputText = $event" />
+            <ContentInputView v-if="showContentInput" v-model="showContentInput" :prompt_file="selectedPrompt" @result="inputText = $event" />
         </ActivityBody>
     </ActivityView>
 </template>
@@ -45,6 +45,14 @@ onMounted(async () => {
         name: prompt,
     }));
 });
+
+const doInput = () => {
+    if (!selectedPrompt.value) {
+        ElMessage.error('请选择提示词');
+        return;
+    }
+    showContentInput.value = true;
+}
 
 const doCopy = () => {
     if (inputText.value) {

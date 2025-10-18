@@ -1,0 +1,86 @@
+[
+    {
+        "name": "OpenAI",
+        "endpoint": "https://api.openai.com/v1/",
+        "description": "OpenAI 提供的 GPT 系列大模型服务",
+        "purchase_url": "https://platform.openai.com/api-keys"
+    },
+    {
+        "name": "DeepSeek",
+        "endpoint": "https://api.deepseek.com/",
+        "description": "来自中国的 DeepSeek 大模型服务",
+        "purchase_url": "https://platform.deepseek.com/api_keys"
+    },
+    {
+        "name": "Aliyun Dashscope",
+        "endpoint": "https://dashscope.aliyuncs.com/compatible-mode/v1/",
+        "description": "阿里云提供的 Dashscope 大模型服务（百炼）",
+        "purchase_url": "https://bailian.console.aliyun.com/"
+    },
+    {
+        "name": "Anthropic Claude",
+        "endpoint": "https://api.anthropic.com/",
+        "description": "Anthropic 公司的 Claude 系列模型",
+        "purchase_url": "https://console.anthropic.com/settings/keys"
+    },
+    {
+        "name": "Google Gemini",
+        "endpoint": "https://generativelanguage.googleapis.com/v1/",
+        "description": "Google 的 Gemini 大模型服务",
+        "purchase_url": "https://aistudio.google.com/app/apikey"
+    },
+    {
+        "name": "Microsoft Azure OpenAI",
+        "endpoint": "https://YOUR_RESOURCE.openai.azure.com/openai/deployments/YOUR_DEPLOYMENT_NAME/?api-version=2024-02-15-preview",
+        "description": "微软 Azure 平台上的 OpenAI 服务",
+        "purchase_url": "https://portal.azure.com/#create/Microsoft.CognitiveServicesOpenAI"
+    },
+    {
+        "name": "百度文心一言",
+        "endpoint": "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/",
+        "description": "百度推出的文心大模型服务",
+        "purchase_url": "https://console.bce.baidu.com/qianfan/ais/console/applicationConsole/application"
+    },
+    {
+        "name": "讯飞星火",
+        "endpoint": "https://spark-api.xf-yun.com/v1.1/chat",
+        "description": "科大讯飞的星火认知大模型",
+        "purchase_url": "https://xinghuo.xfyun.cn/sparkapi"
+    },
+    {
+        "name": "智谱AI",
+        "endpoint": "https://open.bigmodel.cn/api/paas/v4/",
+        "description": "智谱 AI 的 GLM 系列大模型",
+        "purchase_url": "https://open.bigmodel.cn/usercenter/apikeys"
+    },
+    {
+        "name": "月之暗面",
+        "endpoint": "https://api.moonshot.cn/v1/",
+        "description": "月之暗面公司的 Kimi 大模型",
+        "purchase_url": "https://platform.moonshot.cn/console/api-keys"
+    },
+    {
+        "name": "零一万物",
+        "endpoint": "https://api.lingyiwanwu.com/v1/",
+        "description": "零一万物的 Yi 系列大模型",
+        "purchase_url": "https://platform.lingyiwanwu.com/apikeys"
+    },
+    {
+        "name": "Ollama",
+        "endpoint": "http://localhost:11434/v1/",
+        "description": "本地部署的 Ollama 服务",
+        "purchase_url": "https://ollama.ai/"
+    },
+    {
+        "name": "OpenRouter",
+        "endpoint": "https://openrouter.ai/api/v1/",
+        "description": "聚合多种大模型的服务平台",
+        "purchase_url": "https://openrouter.ai/keys"
+    },
+    {
+        "name": "Groq",
+        "endpoint": "https://api.groq.com/openai/v1/",
+        "description": "高速推理的 Groq API 服务",
+        "purchase_url": "https://console.groq.com/keys"
+    }
+]

@@ -17,13 +17,14 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",
+    "@microsoft/fetch-event-source": "^2.0.1",
     "@vueuse/core": "^13.9.0",
     "@zenfs/core": "^2.4.2",
     "@zenfs/dom": "^1.2.5",
     "element-plus": "^2.11.3",
     "idb": "^8.0.3",
     "vue": "^3.5.18",
-    "vue-dialog-view": "^1.4.1",
+    "vue-dialog-view": "^1.4.3",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {

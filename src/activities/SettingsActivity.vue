@@ -7,7 +7,15 @@
                     AI 服务提供商
                 </template>
 
+                <ElButton @click="router.push('/settings/providers')">配置 AI 服务提供商</ElButton>
+            </ElCard>
 
+            <ElCard>
+                <template #header>
+                    Prompt 管理
+                </template>
+
+                <ElButton @click="router.push('/settings/prompts')">配置 Prompt</ElButton>
             </ElCard>
 
             <ElCard>

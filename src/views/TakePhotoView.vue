@@ -111,6 +111,7 @@ const stopCamera = () => {
   mediaStream.value?.getTracks().forEach(track => track.stop())
   mediaStream.value = null
   isStreamActive.value = false
+  videoRef.value.srcObject = null
 }
 
 const takePhoto = () => {
@@ -122,9 +123,9 @@ const takePhoto = () => {
   canvas.height = videoRef.value.videoHeight
   context.drawImage(videoRef.value, 0, 0)
 
+  closeDialog()
   canvas.toBlob((blob) => {
     emit('shot', blob)
-    closeDialog()
   }, 'image/png')
 }
 

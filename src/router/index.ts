@@ -48,6 +48,14 @@ const router = createRouter({
       path: '/fs-test/',
       component: () => import('@/activities/FsTestActivity.vue'),
     },
+    {
+      path: '/settings/prompts',
+      component: () => import('@/activities/SettingsActivity$PromptSettings.vue'),
+    },
+    {
+      path: '/settings/providers',
+      component: () => import('@/activities/SettingsActivity$ProvidersSettings.vue'),
+    },
   ],
 })
 
