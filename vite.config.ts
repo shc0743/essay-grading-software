@@ -38,24 +38,33 @@ export default defineConfig({
       },
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
+          /*if (id.includes('node_modules')) {
             if (id.includes('element-plus')) {
               return 'element-plus'
-            }
-            if (id.includes('vueuse')) {
-              return 'vueuse'
             }
             return 'vendor'
           }
 
           if (id.includes('components')) return 'components';
           if (id.includes('config')) return 'config';
+          if (id.endsWith("agreement.ts")) return 'e.agreement';
 
           const chunkRegex = new RegExp(`/(${chunkDirs.join('|')})/(.+?)\\.vue$`)
           const match = id.match(chunkRegex)
           if (match) {
-            return `${match[1]}-${match[2].toLowerCase()}`
+            return `${match[1]}-${match[2]}`
           }
+
+          const pathParts = id.split('/')
+          if (pathParts.length > 2) {
+            const container_dir = pathParts[pathParts.length - 2]
+            if (container_dir === 'src') return 'app';
+          }
+
+          if ((id.includes('vue') && !id.endsWith('.vue')) || id.includes('vite')) {
+            return 'app'
+          }*/
+          // 教训：没事不要手动分chunk。。。
         },
       },
     },
