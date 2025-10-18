@@ -49,6 +49,7 @@ export default defineConfig({
           }
 
           if (id.includes('components')) return 'components';
+          if (id.includes('config')) return 'config';
 
           const chunkRegex = new RegExp(`/(${chunkDirs.join('|')})/(.+?)\\.vue$`)
           const match = id.match(chunkRegex)
