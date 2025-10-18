@@ -132,11 +132,11 @@ const exec = async () => {
         ElMessage.error('没有填写 API Key');
         return;
     }
-    const prompt = await fs.readFile(`prompts/${props.prompt_file}`, 'utf-8');
-    if (!prompt) {
+    if (!await fs.exists(`prompts/${props.prompt_file}`)) {
         ElMessage.error('提示词文件不存在');
         return;
     }
+    const prompt = await fs.readFile(`prompts/${props.prompt_file}`, 'utf-8');
     isInProgress.value = true;
     isSubmited.value = true;
     // 调用识别接口进行识别(使用@microsoft/fetch-event-source)

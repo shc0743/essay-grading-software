@@ -56,6 +56,10 @@ const router = createRouter({
       path: '/settings/providers',
       component: () => import('@/activities/SettingsActivity$ProvidersSettings.vue'),
     },
+    {
+      path: '/compose/edit/:filename?',
+      component: () => import('@/activities/CompostionActivity$EditQuestion.vue'),
+    },
   ],
 })
 
