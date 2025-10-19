@@ -204,7 +204,13 @@ const executeGrading = async () => {
         const questionData = JSON.parse(questionContent);
 
         // 准备请求数据
-        const requestContent = `${prompt}\n\n试题信息:\n${JSON.stringify(questionData, null, 2)}\n\n学生作文:\n${essayContent.value}`;
+        const requestContext: Record<string, any> = {
+            EssayLanguage: questionData.lang,
+            EssayContent: essayContent.value,
+            MaxScore: questionData.max_score,
+            Question: questionData.content,
+        }
+        const requestContent = prompt.replace(/{{Data:(\w+)}}/g, (match, key) => String(requestContext[key]))
 
         // 显示批改结果对话框
         showGradingResult.value = true;
