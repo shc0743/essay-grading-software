@@ -58,7 +58,7 @@ const router = createRouter({
     },
     {
       path: '/compose/edit/:filename?',
-      component: () => import('@/activities/CompostionActivity$EditQuestion.vue'),
+      component: () => import('@/activities/CompositionActivity$EditQuestion.vue'),
     },
   ],
 })

@@ -10,22 +10,25 @@
                         <span class="item-title">➕ 新试题</span>
                         <span class="item-subtitle">点击创建新的试题</span>
                     </div>
-                    <el-icon><ArrowRight /></el-icon>
+                    <el-icon>
+                        <ArrowRight />
+                    </el-icon>
                 </div>
 
                 <!-- 试题列表 -->
-                <div 
-                    v-for="question in displayedQuestions" 
-                    :key="question.filename"
-                    class="list-item"
-                    @click="editQuestion(question.filename)"
-                >
-                    <div class="item-content">
+                <div v-for="question in displayedQuestions" :key="question.filename" class="list-item">
+                    <div class="item-content" @click="editQuestion(question.filename)">
                         <span class="item-title">{{ question.name || question.title || '未命名试题' }}</span>
                         <span class="item-subtitle">语言: {{ question.lang || '未设置' }}</span>
                         <span class="item-meta">创建时间: {{ question.createTime }}</span>
                     </div>
-                    <el-icon><ArrowRight /></el-icon>
+                    <div class="item-actions">
+                        <el-button type="danger" size="small" @click.stop="confirmDeleteQuestion(question.filename)"
+                            :icon="Delete" circle />
+                        <el-icon @click.stop="editQuestion(question.filename)">
+                            <ArrowRight />
+                        </el-icon>
+                    </div>
                 </div>
 
                 <!-- 空状态 -->
@@ -36,15 +39,10 @@
 
             <!-- 分页组件 -->
             <div class="pagination-container" v-if="questions.length > 0">
-                <el-pagination
-                    v-model:current-page="currentPage"
-                    v-model:page-size="pageSize"
-                    :page-sizes="[10, 20, 50, 100]"
-                    :total="totalQuestions"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                />
+                <el-pagination v-model:current-page="currentPage" v-model:page-size="pageSize"
+                    :page-sizes="[5, 10, 20, 50, 100]" :total="totalQuestions"
+                    layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange" size=small />
             </div>
         </ActivityBody>
     </ActivityView>
@@ -53,8 +51,8 @@
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus';
-import { ArrowRight } from '@element-plus/icons-vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
+import { ArrowRight, Delete } from '@element-plus/icons-vue';
 import { fs } from '@/userdata';
 
 const pageTitle = ref('组卷');
@@ -90,10 +88,10 @@ const loadQuestions = async () => {
     try {
         // 确保目录存在
         await fs.mkdir('user/questions', { recursive: true });
-        
+
         // 读取目录下的所有文件
         const files = await fs.readdir('user/questions');
-        
+
         // 过滤出 .json 文件并按数字降序排序
         const jsonFiles = files
             .filter(file => file.endsWith('.json'))
@@ -154,6 +152,38 @@ const handleSizeChange = (newSize: number) => {
 const handleCurrentChange = (newPage: number) => {
     currentPage.value = newPage;
 };
+
+// 确认删除试题
+const confirmDeleteQuestion = async (filename: string) => {
+    try {
+        await ElMessageBox.confirm(
+            '确定要删除此试题吗？删除后无法恢复',
+            '删除确认',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }
+        );
+
+        await deleteQuestion(filename);
+    } catch (error) {
+        // 用户取消删除
+        console.log('取消删除试题:', filename);
+    }
+};
+
+// 删除试题
+const deleteQuestion = async (filename: string) => {
+    try {
+        await fs.unlink(`user/questions/${filename}`);
+        ElMessage.success('删除试题成功');
+        await loadQuestions(); // 重新加载试题列表
+    } catch (error) {
+        console.error('删除试题失败:', error);
+        ElMessage.error('删除试题失败');
+    }
+};
 </script>
 
 <style scoped>
@@ -211,6 +241,18 @@ const handleCurrentChange = (newPage: number) => {
     color: #999;
 }
 
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 12px;
+}
+
+.item-actions .el-button {
+    margin: 0;
+    padding: 6px;
+}
+
 .empty-state {
     padding: 40px 0;
 }
@@ -221,7 +263,11 @@ const handleCurrentChange = (newPage: number) => {
     background: white;
     border-top: 1px solid #e0e0e0;
     display: flex;
-    justify-content: center;
+    overflow: auto;
+}
+
+.pagination-container>* {
+    margin: 0 auto;
 }
 
 /* 滚动条样式 */
