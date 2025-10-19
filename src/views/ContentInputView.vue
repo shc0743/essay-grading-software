@@ -1,6 +1,7 @@
 <template>
     <DialogView v-model="open" class="civ-container">
-        <TakePhotoView ref="takePhotoDlg" @shot="p => onFile([p])" />
+        <TakePhotoView ref="takePhotoDlg" @shot="onShot" />
+        <ImageProcessView ref="imageProcessDlg" @result="onImageProcessResult" />
         <template #title>内容录入</template>
         <div class="view">
             <div class="row">
@@ -42,6 +43,7 @@
 <script setup>
 import { computed, onMounted, ref, nextTick, watch } from 'vue';
 import TakePhotoView from './TakePhotoView.vue';
+import ImageProcessView from './ImageProcessView.vue';
 import { ElPopMessage as ElMessage } from '@/ElPopMessage'
 import { db, fs } from '@/userdata';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
@@ -57,14 +59,20 @@ const open = computed({
     set: (value) => emit('update:modelValue', value),
 });
 
-// watch(() => open.value, (newValue) => {
-    // if (!newValue) isSubmited.value = false;
-// });
-
 const takePhotoDlg = ref(null);
+const imageProcessDlg = ref(null); // 图像处理组件引用
 const fileAdd = ref(null);
 const accept = ref('');
-const fileList = ref([]);
+const fileList = ref([]); // 结构改为 { id: string, file: Blob, name: string }[]
+
+// 生成带ID的文件项
+const createFileItem = (file) => {
+    return {
+        id: crypto.randomUUID(),
+        file: file,
+        name: file.name || "图片"
+    };
+};
 
 const addFile = async (type) => {
     if (type === 0) {
@@ -80,9 +88,12 @@ const addFile = async (type) => {
 
 const onFile = (files) => {
     let failCount = 0;
+    let successCount = 0;
     for (const file of files) {
         if (file && file.type.startsWith('image/')) {
-            fileList.value.push(file);
+            const fileItem = createFileItem(file);
+            fileList.value.push(fileItem);
+            successCount++;
         } else {
             failCount++;
         }
@@ -90,9 +101,21 @@ const onFile = (files) => {
     if (failCount > 0) {
         ElMessage.warning(`处理了 ${files.length} 个文件，其中 ${failCount} 个文件类型错误`);
     }
-    else {
-        ElMessage.success(`添加了 ${files.length} 个文件`);
+    else if (successCount > 0) {
+        ElMessage.success(`添加了 ${successCount} 个文件`);
     }
+}
+
+// 拍照回调
+const onShot = (photoBlob) => {
+    // 创建文件项并自动打开图像处理对话框
+    const fileItem = createFileItem(new Blob([photoBlob], { type: 'image/jpeg' }));
+    fileList.value.push(fileItem);
+    
+    // 自动打开图像处理对话框
+    nextTick(() => {
+        imageProcessDlg.value.process(fileItem.id, fileItem.file);
+    });
 }
 
 const removeFile = (index) => {
@@ -100,9 +123,30 @@ const removeFile = (index) => {
 }
 
 const editImg = (index) => {
-    const file = fileList.value[index];
-    if (file.type.startsWith('image/')) {
+    const fileItem = fileList.value[index];
+    if (fileItem.file.type.startsWith('image/')) {
+        // 打开图像处理对话框
+        imageProcessDlg.value.process(fileItem.id, fileItem.file);
+    }
+}
+
+// 图像处理结果回调
+const onImageProcessResult = (result) => {
+    // 根据ID找到对应的文件项并更新
+    const index = fileList.value.findIndex(item => item.id === result.id);
+    if (index !== -1) {
+        // 创建新的文件项，保持相同的ID
+        const processedFile = new File([result.result], fileList.value[index].name, {
+            type: result.result.type,
+            lastModified: Date.now()
+        });
         
+        fileList.value[index] = {
+            ...fileList.value[index],
+            file: processedFile
+        };
+        
+        ElMessage.success('图像处理完成');
     }
 }
 
@@ -143,14 +187,16 @@ const exec = async () => {
     const prompt = await fs.readFile(`prompts/${props.prompt_file}`, 'utf-8');
     isInProgress.value = true;
     isSubmited.value = true;
+    resultText.value = ''; // 清空之前的结果
+    
     // 调用识别接口进行识别(使用@microsoft/fetch-event-source)
     abortController.value = new AbortController();
     try {
         const image_urls = [];
-        for (const file of fileList.value) {
+        for (const fileItem of fileList.value) {
             const b64 = await new Promise((resolve, reject) => {
                 const reader = new FileReader();
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(fileItem.file);
                 reader.onloadend = () => resolve(reader.result);
                 reader.onerror = reject;
             })
