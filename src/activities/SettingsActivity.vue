@@ -191,7 +191,7 @@ const exportConf = async () => {
 
         // 显示给用户
         const { value } = await ElMessageBox.prompt('以下是导出的数据:', '导出数据', {
-            inputValue: JSON.stringify(data, null, 2),
+            inputValue: JSON.stringify(data),
             confirmButtonText: '复制',
             cancelButtonText: '取消'
         });

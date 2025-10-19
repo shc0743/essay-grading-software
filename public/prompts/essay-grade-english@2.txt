@@ -22,7 +22,7 @@
 
 ---
 
-{{Data:试题内容}}
+{{Data:Question}}
 
 ---
 
