@@ -66,7 +66,6 @@ const importConf = async () => {
             '请输入要导入的配置数据:',
             '导入配置',
             {
-                inputType: 'textarea',
                 confirmButtonText: '导入',
                 cancelButtonText: '取消'
             }

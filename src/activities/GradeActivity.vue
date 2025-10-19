@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import { ElMessage } from 'element-plus';
+import { ElPopMessage as ElMessage } from '@/ElPopMessage'
 import ContentInputView from '../views/ContentInputView.vue';
 import { fs, db } from '@/userdata';
 import { fetchEventSource } from '@microsoft/fetch-event-source';

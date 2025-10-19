@@ -74,18 +74,22 @@ const createPopMessage = (options: MessageOptions | string): ReturnType<typeof E
   return ElMessage(config)
 }
 
-// 主函数
+// 主函数类型
 type ElPopMessageFn = {
   (options: MessageOptions | string): ReturnType<typeof ElMessage>;
   closeAll: () => void;
-} & Partial<Record<MessageType, (options: MessageOptions | string) => ReturnType<typeof ElMessage>>>;
+  success: (options: MessageOptions | string) => ReturnType<typeof ElMessage>;
+  warning: (options: MessageOptions | string) => ReturnType<typeof ElMessage>;
+  error: (options: MessageOptions | string) => ReturnType<typeof ElMessage>;
+  info: (options: MessageOptions | string) => ReturnType<typeof ElMessage>;
+  primary: (options: MessageOptions | string) => ReturnType<typeof ElMessage>;
+};
 
 const ElPopMessage = ((options: MessageOptions | string) => {
-  return createPopMessage(options)
-}) as ElPopMessageFn
+  return createPopMessage(options);
+}) as ElPopMessageFn;
 
-// 添加快捷方法
-(['success', 'warning', 'error', 'info'] as MessageType[]).forEach((type) => {
+(['success', 'warning', 'error', 'info', 'primary'] as MessageType[]).forEach((type) => {
   ElPopMessage[type] = (options: MessageOptions | string): ReturnType<typeof ElMessage> => {
     return createPopMessage({
       ...(typeof options === 'string' ? { message: options } : options),
