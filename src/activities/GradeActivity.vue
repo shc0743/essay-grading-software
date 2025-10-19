@@ -175,7 +175,7 @@ const executeGrading = async () => {
 
     try {
         // 获取API配置
-        const provider = await db.get("config", "services.api.ocr.provider");
+        const provider = await db.get("config", "services.api.grading.provider");
         const providers = await db.get("config", "user.ai_providers");
         if (!provider || !providers) {
             ElMessage.error('请先配置识别接口');
@@ -217,7 +217,7 @@ const executeGrading = async () => {
         const invokeUrl = new URL('chat/completions', baseUrl);
         const extraData: any = {};
         if (enableThinking.value) {
-            extraData.extra_body = ({"enable_thinking": true});
+            extraData.enable_thinking = true;
         }
 
         await fetchEventSource(invokeUrl.href, {
