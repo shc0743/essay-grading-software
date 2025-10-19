@@ -42,7 +42,7 @@
 <script setup>
 import { computed, onMounted, ref, nextTick } from 'vue';
 import TakePhotoView from './TakePhotoView.vue';
-import { ElMessage } from 'element-plus';
+import { ElPopMessage as ElMessage } from '@/ElPopMessage'
 import { db, fs } from '@/userdata';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 

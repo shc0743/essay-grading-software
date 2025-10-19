@@ -38,25 +38,26 @@
         </div>
 
       </div>
+      
+      <div>分辨率: {{fbl.w}}x{{fbl.h}}</div>
     </div>
   </DialogView>
 </template>
 
 <script setup>
-import { nextTick, ref, watch } from 'vue'
-import { ElSelect, ElOption, ElButton, ElIcon, ElMessage } from 'element-plus'
+import { nextTick, ref, reactive, watch } from 'vue'
+import { ElSelect, ElOption, ElButton, ElIcon } from 'element-plus'
 import { VideoCamera, Warning } from '@element-plus/icons-vue'
 import { useDevicesList } from '@vueuse/core'
+import { ElPopMessage as ElMessage } from '@/ElPopMessage'
 
 const dialogVisible = ref(false)
-const { videoInputs: cameraDevices, ensurePermissions } = useDevicesList({
-  requestPermissions: false,
-  constraints: { video: true, audio: false }
-})
+const cameraDevices = ref([])
 
 const selectedCameraId = ref('')
 const videoRef = ref(null)
 const mediaStream = ref(null)
+const fbl = reactive({ w: 0, h: 0 })
 const isStreamActive = ref(false)
 const permissionDenied = ref(false)
 const dialogContainer = ref(document.body)
@@ -66,13 +67,20 @@ const emit = defineEmits(['shot'])
 const request = async () => {
   dialogVisible.value = true
   await nextTick()
+  
+  const devs = useDevicesList({
+    requestPermissions: true,
+    constraints: { video: true, audio: false }
+  })
 
-  const hasPermission = await ensurePermissions()
+  const hasPermission = await devs.ensurePermissions()
   if (!hasPermission) {
     permissionDenied.value = true
     ElMessage.error('需要摄像头权限')
     return
   }
+  
+  cameraDevices.value = devs.videoInputs.value
 
   permissionDenied.value = false
 
@@ -88,13 +96,24 @@ const startCamera = async (deviceId) => {
   permissionDenied.value = false
 
   try {
-    mediaStream.value = await navigator.mediaDevices.getUserMedia({
+    const stream = await navigator.mediaDevices.getUserMedia({
       video: {
         deviceId: deviceId ? { exact: deviceId } : undefined,
-        width: { ideal: 1280 },
-        height: { ideal: 720 }
+        width: { ideal: 4096 }, height: { ideal: 2160 } 
       }
     })
+    const track = stream.getVideoTracks()[0];
+    const capabilities = track.getCapabilities();
+    const newConstraints = {
+      video: {
+        width: { exact: capabilities.width.max },
+        height: { exact: capabilities.height.max },
+        deviceId: deviceId ? { exact: deviceId } : undefined,
+      }
+    };
+    fbl.w = capabilities.width.max; fbl.h = capabilities.height.max;
+    track.stop();
+    mediaStream.value = await navigator.mediaDevices.getUserMedia(newConstraints);
     videoRef.value.srcObject = mediaStream.value
     isStreamActive.value = true
   } catch (error) {
