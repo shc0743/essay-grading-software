@@ -83,7 +83,7 @@ const showGradingResult = ref(false);
 const gradingResult = ref('');
 const isGrading = ref(false);
 const isLoadingQuestions = ref(false);
-const abortController = ref(null);
+const abortController = ref<AbortController | null>(null);
 
 // 试题列表
 const questions = ref<Array<{
