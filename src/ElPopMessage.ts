@@ -16,6 +16,7 @@ const popoverContainer = ((): HTMLDivElement => {
   popover.style.width = popover.style.height = '0px';
   popover.style.top = popover.style.left = '-100%';
   popover.style.boxSizing = 'border-box'; popover.style.padding = '0px';
+  popover.style.position = 'fixed';
   document.body.appendChild(popover)
   return popover
 })()
