@@ -47,7 +47,7 @@
         <!-- 内容录入对话框 -->
         <ContentInputView 
             v-model="showContentInput" 
-            prompt_file="ocr-essay-english@1.txt"
+            prompt_file="ocr-essay-english.txt"
             @result="handleContentInputResult"
         />
 
