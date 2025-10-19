@@ -1,4 +1,4 @@
-import { ElMessage, type ElMessageOptions, type messageType } from 'element-plus'
+import { ElMessage, type MessageOptions, type MessageType } from 'element-plus'
 
 const isSupported = ((): boolean => {
   try {
@@ -51,10 +51,10 @@ const closePopover = (): void => {
   }
 }
 
-const createPopMessage = (options: ElMessageOptions | string): ReturnType<typeof ElMessage> => {
+const createPopMessage = (options: MessageOptions | string): ReturnType<typeof ElMessage> => {
   if (!isSupported) return ElMessage(options)
 
-  const config: ElMessageOptions = typeof options === 'string' 
+  const config: MessageOptions = typeof options === 'string' 
     ? { message: options } 
     : { ...options }
   
@@ -66,22 +66,27 @@ const createPopMessage = (options: ElMessageOptions | string): ReturnType<typeof
   
   // 设置 appendTo 和 onClose
   config.appendTo = popoverContainer
-  config.onClose = (instance: any) => {
+  config.onClose = () => {
     closePopover()
-    originalOnClose?.(instance)
+    originalOnClose?.()
   }
   
   return ElMessage(config)
 }
 
 // 主函数
-const ElPopMessage = (options: ElMessageOptions | string): ReturnType<typeof ElMessage> => {
+type ElPopMessageFn = {
+  (options: MessageOptions | string): ReturnType<typeof ElMessage>;
+  closeAll: () => void;
+} & Partial<Record<MessageType, (options: MessageOptions | string) => ReturnType<typeof ElMessage>>>;
+
+const ElPopMessage = ((options: MessageOptions | string) => {
   return createPopMessage(options)
-}
+}) as ElPopMessageFn
 
 // 添加快捷方法
-(['success', 'warning', 'error', 'info'] as messageType[]).forEach((type) => {
-  ElPopMessage[type] = (options: ElMessageOptions | string): ReturnType<typeof ElMessage> => {
+(['success', 'warning', 'error', 'info'] as MessageType[]).forEach((type) => {
+  ElPopMessage[type] = (options: MessageOptions | string): ReturnType<typeof ElMessage> => {
     return createPopMessage({
       ...(typeof options === 'string' ? { message: options } : options),
       type
