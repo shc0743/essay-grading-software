@@ -28,7 +28,7 @@
             <div class="essay-input-container">
                 <div class="input-header">
                     <span>作文内容</span>
-                    <ElButton type="primary" size="small" @click="showContentInput = true">录入</ElButton>
+                    <ElButton type="primary" plain size="small" @click="showContentInput = true">录入</ElButton>
                 </div>
                 <ElInput 
                     type="textarea" 
@@ -40,7 +40,8 @@
 
             <!-- 底部功能按钮 -->
             <div class="action-buttons">
-                <ElButton type="primary" :disabled="!canGrade" @click="executeGrading">开始批改</ElButton>
+                <ElCheckbox v-model="enableThinking">思考</ElCheckbox>
+                <ElButton type="primary" plain :disabled="!canGrade" @click="executeGrading">开始批改</ElButton>
             </div>
         </ActivityBody>
 
@@ -81,6 +82,7 @@ const essayContent = ref('');
 const showContentInput = ref(false);
 const showGradingResult = ref(false);
 const gradingResult = ref('');
+const enableThinking = ref(false);
 const isGrading = ref(false);
 const isLoadingQuestions = ref(false);
 const abortController = ref<AbortController | null>(null);
@@ -213,7 +215,11 @@ const executeGrading = async () => {
 
         const baseUrl = providerConfig.endpoint;
         const invokeUrl = new URL('chat/completions', baseUrl);
-        
+        const extraData: any = {};
+        if (enableThinking.value) {
+            extraData.extra_body = ({"enable_thinking": true});
+        }
+
         await fetchEventSource(invokeUrl.href, {
             openWhenHidden: true,
             method: 'POST',
@@ -228,12 +234,16 @@ const executeGrading = async () => {
                     content: requestContent
                 }],
                 stream: true,
+                ...extraData
             }),
             onmessage: event => {
                 if (event.data === '[DONE]' || !event.data) {
                     return;
                 }
                 const data = JSON.parse(event.data);
+                if (data.choices[0].delta.reasoning_content) {
+                    gradingResult.value += data.choices[0].delta.reasoning_content;
+                }
                 if (data.choices[0].delta.content) {
                     gradingResult.value += data.choices[0].delta.content;
                 }
@@ -300,10 +310,6 @@ const closeGradingResult = () => {
     font-weight: 500;
 }
 
-.essay-textarea {
-    flex: 1;
-}
-
 .action-buttons {
     margin: 16px;
     display: flex;
@@ -317,12 +323,14 @@ const closeGradingResult = () => {
 
 .grading-progress {
     text-align: center;
-    padding: 20px;
+    padding: 5px;
     color: #606266;
 }
 
-.result-textarea {
-    height: 80%;
+.essay-textarea, .result-textarea {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .dialog-footer {
@@ -331,13 +339,9 @@ const closeGradingResult = () => {
     margin-top: 16px;
 }
 
-:deep(.essay-textarea) textarea {
-    resize: none;
-    height: 100%;
-}
-
+:deep(.essay-textarea) textarea ,
 :deep(.result-textarea) textarea {
     resize: none;
-    height: 100%;
+    flex: 1;
 }
 </style>
