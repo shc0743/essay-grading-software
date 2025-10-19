@@ -63,6 +63,12 @@ const permissionDenied = ref(false)
 const dialogContainer = ref(document.body)
 
 const emit = defineEmits(['shot'])
+const props = defineProps({
+  highQuality: {
+    type: Boolean,
+    default: false
+  },
+})
 
 const request = async () => {
   dialogVisible.value = true
@@ -143,9 +149,11 @@ const takePhoto = () => {
   context.drawImage(videoRef.value, 0, 0)
 
   closeDialog()
+  const param1 = props.highQuality ? 'image/png' : 'image/jpeg';
+  const param2 = props.highQuality ? undefined : 0.8;
   canvas.toBlob((blob) => {
     emit('shot', blob)
-  }, 'image/png')
+  }, param1, param2)
 }
 
 const onCameraChange = (deviceId) => {
