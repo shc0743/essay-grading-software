@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, nextTick } from 'vue';
+import { computed, onMounted, ref, nextTick, watch } from 'vue';
 import TakePhotoView from './TakePhotoView.vue';
 import { ElPopMessage as ElMessage } from '@/ElPopMessage'
 import { db, fs } from '@/userdata';
@@ -56,6 +56,10 @@ const open = computed({
     get: () => props.modelValue,
     set: (value) => emit('update:modelValue', value),
 });
+
+// watch(() => open.value, (newValue) => {
+    // if (!newValue) isSubmited.value = false;
+// });
 
 const takePhotoDlg = ref(null);
 const fileAdd = ref(null);
@@ -203,6 +207,7 @@ const exec = async () => {
 }
 
 const submitResult = (accept) => {
+    isSubmited.value = false;
     if (!accept) {
         if (abortController.value) {
             abortController.value.abort();
