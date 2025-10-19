@@ -30,15 +30,19 @@ import { fs } from './userdata.ts'
 if (!await fs.exists('prompts')) {
     await fs.mkdir('prompts');
 }
-const loadPrompt = async (name: string, version: number) => {
-    if (await fs.exists(`prompts/${name}.txt`)) { // fs中直接保存最新版，方便使用
-        return;
+do {
+    const version = await db.get('config', 'prompt.version.lock');
+    const latest = JSON.stringify(PROMPT_FILES);
+    if (version === latest) break;
+    const loadPrompt = async (name: string, version: number) => {
+        // fs中直接保存最新版，方便使用
+        const response = await fetch(`/prompts/${name}@${version}.txt`);
+        const text = await response.text();
+        await fs.writeFile(`prompts/${name}.txt`, text);
     }
-    const response = await fetch(`/prompts/${name}@${version}.txt`);
-    const text = await response.text();
-    await fs.writeFile(`prompts/${name}.txt`, text);
-}
-for (const i in PROMPT_FILES) await loadPrompt(i, PROMPT_FILES[i]);
+    for (const i in PROMPT_FILES) await loadPrompt(i, PROMPT_FILES[i]);
+    await db.put('config', latest, 'prompt.version.lock');
+} while (false);
 
 
 app.mount('vue-app')
