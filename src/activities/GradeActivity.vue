@@ -46,7 +46,8 @@
         </ActivityBody>
 
         <!-- 内容录入对话框 -->
-        <ContentInputView 
+        <ContentInputView
+            v-if="showContentInput"
             v-model="showContentInput" 
             prompt_file="ocr-essay-english.txt"
             @result="handleContentInputResult"
