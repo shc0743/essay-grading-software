@@ -40,7 +40,7 @@
 
             <!-- 底部功能按钮 -->
             <div class="action-buttons">
-                <ElCheckbox v-model="enableThinking">思考</ElCheckbox>
+                <ElCheckbox size="small" style="margin-right: 1em;" v-model="enableThinking">思考</ElCheckbox>
                 <ElButton type="primary" plain :disabled="!canGrade" @click="executeGrading">开始批改</ElButton>
             </div>
         </ActivityBody>
@@ -314,6 +314,7 @@ const closeGradingResult = () => {
     margin: 16px;
     display: flex;
     justify-content: center;
+    align-items: center;
 }
 
 .grading-result-dialog {
