@@ -2,8 +2,12 @@
   <DialogView v-model="open" class="container">
     <template #title>图像处理</template>
     <div class="view">
-      <!-- 使用 cropperjs 容器 -->
-      <div class="cropper-wrapper" v-if="open && imageSrc" ref="containerRef"></div>
+      <!-- 使用 vue-picture-cropper -->
+      <vue-picture-cropper v-if="imageSrc && open" :boxStyle="{
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#f8f8f8',
+      }" :img="imageSrc" :options="cropperOptions" @ready="onCropperReady" class="cropper" />
 
       <div v-else class="empty-state">
         <p>请选择要处理的图片</p>
@@ -11,11 +15,30 @@
 
       <!-- 操作按钮区域 -->
       <div class="toolbar">
+        <div class="ratio-controls" v-if="0">
+          <label>裁剪比例：</label>
+          <!-- FIXME: 裁剪比例设置不生效 -->
+          <select v-model="selectedRatio" @change="updateRatio">
+            <option value="free">自由比例</option>
+            <option value="1:1">1:1</option>
+            <option value="4:3">4:3</option>
+            <option value="16:9">16:9</option>
+            <option value="3:2">3:2</option>
+          </select>
+
+          <!-- <label style="margin-left: 16px;">输出格式：</label> -->
+          <select v-if="0" v-model="outputType">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="webp">WebP</option>
+          </select>
+        </div>
+
         <div class="action-buttons">
-          <button @click="setAction('rotate')" class="btn">旋转模式</button>
-          <button @click="setAction('scale')" class="btn">缩放模式</button>
-          <button @click="setAction('move')" class="btn">移动模式</button>
-          <button @click="setAction('select')" class="btn">选择模式</button>
+          <button @click="rotate(-90)" class="btn">向左旋转</button>
+          <button @click="rotate(90)" class="btn">向右旋转</button>
+          <button @click="zoom(0.1)" class="btn">放大</button>
+          <button @click="zoom(-0.1)" class="btn">缩小</button>
           <button @click="reset" class="btn">重置</button>
           <button @click="processImage" class="btn primary">确认处理</button>
           <button @click="cancel" class="btn secondary">取消</button>
@@ -26,21 +49,35 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue';
-import Cropper from 'cropperjs';
-import { ElPopMessage as ElMessage } from '@/ElPopMessage';
+import { ref, computed, nextTick } from 'vue';
+import VuePictureCropper, { cropper } from 'vue-picture-cropper';
+import { ElPopMessage as ElMessage } from '@/ElPopMessage'
 
 const emit = defineEmits(['update:modelValue', 'result']);
 
-const open = ref(false);
-const containerRef = ref(null);
-const cropperInstance = ref(null);
-const canvasElement = ref(null);
+const open = ref(false)
 
 // 响应式数据
 const imageSrc = ref('');
 const currentFileId = ref(null);
 const selectedRatio = ref('free');
+const outputType = ref('png');
+
+// 裁剪器配置
+const cropperOptions = ref({
+  viewMode: 1,
+  dragMode: 'crop',
+  aspectRatio: NaN, // 自由比例
+  background: false,
+  autoCropArea: 1,
+  restore: false,
+  guides: true,
+  center: true,
+  highlight: false,
+  cropBoxMovable: true,
+  cropBoxResizable: true,
+  toggleDragModeOnDblclick: true,
+});
 
 // 暴露给外部的方法
 const process = async (file_id, file) => {
@@ -54,98 +91,23 @@ const process = async (file_id, file) => {
   reader.readAsDataURL(file);
 
   open.value = true;
+
+  // 重置状态
   selectedRatio.value = 'free';
+  outputType.value = 'png';
+
+  await nextTick();
 };
 
-// 监听容器和图片源的变化，初始化 cropper
-watch([open, imageSrc, containerRef], async ([isOpen, src, container]) => {
-  if (isOpen && src && container) {
-    await nextTick();
-    initCropper();
-  }
-});
-
-// 初始化 Cropper 实例
-const initCropper = () => {
-  if (!containerRef.value || !imageSrc.value) return;
-
-  // 清除容器内容
-  containerRef.value.innerHTML = '';
-
-  // 创建图片元素
-  const image = document.createElement('img');
-  image.src = imageSrc.value;
-  image.alt = '待处理图片';
-  
-  containerRef.value.appendChild(image);
-
-  // 销毁旧的实例
-  if (cropperInstance.value) {
-    cropperInstance.value.destroy();
-  }
-
-  // 使用 Cropper 构造函数
-  cropperInstance.value = new Cropper(image, {
-    container: containerRef.value,
-  });
-
-  // 获取 canvas 元素并设置事件监听
-  canvasElement.value = cropperInstance.value.getCropperCanvas();
-  if (canvasElement.value) {
-    setupEventListeners();
-  }
-};
-
-// 设置事件监听器
-const setupEventListeners = () => {
-  if (!canvasElement.value) return;
-
-  canvasElement.value.addEventListener('action', handleAction);
-  canvasElement.value.addEventListener('actionstart', handleActionStart);
-  canvasElement.value.addEventListener('actionmove', handleActionMove);
-  canvasElement.value.addEventListener('actionend', handleActionEnd);
-};
-
-// 事件处理函数
-const handleAction = (event) => {
-  console.log('Action:', event.detail);
-  // 处理旋转、缩放等操作
-  if (event.detail.action === 'rotate' && event.detail.rotate) {
-    console.log('旋转角度:', event.detail.rotate);
-  }
-  if (event.detail.action === 'scale' && event.detail.scale) {
-    console.log('缩放比例:', event.detail.scale);
-  }
-};
-
-const handleActionStart = (event) => {
-  console.log('Action start:', event.detail);
-};
-
-const handleActionMove = (event) => {
-  console.log('Action move:', event.detail);
-};
-
-const handleActionEnd = (event) => {
-  console.log('Action end:', event.detail);
-};
-
-// 设置操作模式
-const setAction = (action) => {
-  if (canvasElement.value) {
-    canvasElement.value.$setAction(action);
-  }
+// 裁剪器准备就绪
+const onCropperReady = () => {
+  // console.log('Cropper is ready');
 };
 
 // 更新裁剪比例
 const updateRatio = () => {
-  if (!cropperInstance.value) return;
-
-  const selection = cropperInstance.value.getCropperSelection();
-  if (!selection) return;
-
   const ratios = {
-    'free': null,
+    'free': NaN,
     '1:1': 1,
     '4:3': 4 / 3,
     '16:9': 16 / 9,
@@ -153,55 +115,50 @@ const updateRatio = () => {
   };
 
   const aspectRatio = ratios[selectedRatio.value];
-  
-  if (aspectRatio) {
-    // 设置固定比例
-    selection.style.aspectRatio = aspectRatio;
-  } else {
-    // 自由比例
-    selection.style.aspectRatio = 'unset';
+  cropperOptions.value.aspectRatio = aspectRatio;
+};
+
+// 旋转图片
+const rotate = (degree) => {
+  if (cropper) {
+    cropper.rotate(degree);
+  }
+};
+
+// 缩放图片
+const zoom = (ratio) => {
+  if (cropper) {
+    cropper.zoom(ratio);
   }
 };
 
 // 重置
 const reset = () => {
-  if (cropperInstance.value) {
-    cropperInstance.value.destroy();
-    initCropper();
+  if (cropper) {
+    cropper.reset();
+    selectedRatio.value = 'free';
+    cropperOptions.value.aspectRatio = NaN;
   }
-  selectedRatio.value = 'free';
 };
 
 // 处理图片并返回结果
-const processImage = async () => {
-  if (!canvasElement.value) {
+const processImage = () => {
+  if (!cropper) {
     ElMessage.error('裁剪器未就绪');
     return;
   }
 
-  try {
-    const resultCanvas = await canvasElement.value.$toCanvas({
-      beforeDraw: (context, canvas) => {
-        // 可以在这里添加图像处理效果
-        // context.filter = 'grayscale(50%)';
-      }
+  // 使用 cropper 工具实例获取结果
+  cropper.getBlob().then(blob => {
+    emit('result', {
+      id: currentFileId.value,
+      result: blob
     });
-    
-    resultCanvas.toBlob((blob) => {
-      if (blob) {
-        emit('result', {
-          id: currentFileId.value,
-          result: blob
-        });
-        open.value = false;
-        clearData();
-      } else {
-        ElMessage.error('生成裁剪图片失败');
-      }
-    }, 'image/png', 0.95);
-  } catch (err) {
-    ElMessage.error('获取裁剪图片失败: ' + err.message);
-  }
+    open.value = false;
+    clearData();
+  }).catch(err => {
+    ElMessage.error('获取裁剪图片失败: ' + err);
+  });
 };
 
 // 取消处理
@@ -210,34 +167,11 @@ const cancel = () => {
   clearData();
 };
 
-// 清理数据和事件监听器
+// 清理数据
 const clearData = () => {
-  // 移除事件监听器
-  if (canvasElement.value) {
-    canvasElement.value.removeEventListener('action', handleAction);
-    canvasElement.value.removeEventListener('actionstart', handleActionStart);
-    canvasElement.value.removeEventListener('actionmove', handleActionMove);
-    canvasElement.value.removeEventListener('actionend', handleActionEnd);
-    canvasElement.value = null;
-  }
-
-  if (cropperInstance.value) {
-    cropperInstance.value.destroy();
-    cropperInstance.value = null;
-  }
-  
-  if (containerRef.value) {
-    containerRef.value.innerHTML = '';
-  }
-  
   imageSrc.value = '';
   currentFileId.value = null;
 };
-
-// 组件卸载时清理
-onUnmounted(() => {
-  clearData();
-});
 
 // 暴露方法给父组件
 defineExpose({
@@ -247,10 +181,10 @@ defineExpose({
 
 <style scoped>
 .container {
-  width: 95vw;
-  height: 95vh;
-  max-width: 1600px;
-  max-height: 1200px;
+  width: 80vw;
+  height: 80vh;
+  max-width: 1200px;
+  max-height: 800px;
 }
 
 .view {
@@ -261,15 +195,12 @@ defineExpose({
   padding: 0;
 }
 
-.cropper-wrapper {
+.cropper {
   flex: 1;
   min-height: 0;
   background: #f5f5f5;
   border-radius: 8px;
   overflow: hidden;
-  position: relative;
-  width: 100%;
-  height: 100%;
 }
 
 .empty-state {
@@ -293,7 +224,7 @@ defineExpose({
   gap: 16px;
 }
 
-/*.ratio-controls {
+.ratio-controls {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -311,7 +242,7 @@ defineExpose({
   border-radius: 4px;
   background: white;
   font-size: 14px;
-}*/
+}
 
 .action-buttons {
   display: flex;
@@ -371,14 +302,5 @@ defineExpose({
   .action-buttons {
     justify-content: center;
   }
-}
-
-:deep(cropper-canvas) {
-  width: 100%;
-  height: 100%;
-}
-
-:deep(cropper-selection) {
-  border: 2px solid #1890ff !important;
 }
 </style>
