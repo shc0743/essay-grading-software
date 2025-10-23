@@ -74,7 +74,7 @@ const request = async () => {
   dialogVisible.value = true
   await nextTick()
   
-  const devs = useDevicesList({
+  let devs = useDevicesList({
     requestPermissions: true,
     constraints: { video: true, audio: false }
   })
@@ -85,6 +85,13 @@ const request = async () => {
     ElMessage.error('需要摄像头权限')
     return
   }
+
+  // 修复第一次打开获取不到设备的问题
+  devs = useDevicesList({
+    requestPermissions: true,
+    constraints: { video: true, audio: false }
+  })
+  await devs.ensurePermissions()
   
   cameraDevices.value = devs.videoInputs.value
 
