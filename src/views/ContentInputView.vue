@@ -132,9 +132,10 @@ const editImg = (index) => {
 
 // 图像处理结果回调
 const onImageProcessResult = (result) => {
+    if (!result || !result.id || !result.result) return ElMessage.error('无效的图像处理结果');
     // 根据ID找到对应的文件项并更新
     const index = fileList.value.findIndex(item => item.id === result.id);
-    const processedFile = new File([result.result], fileList.value[index].name, {
+    const processedFile = new File([result.result], ((index === -1) ? '图片' : fileList.value[index].name), {
         type: result.result.type,
         lastModified: Date.now()
     });
