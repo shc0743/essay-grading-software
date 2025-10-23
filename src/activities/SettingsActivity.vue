@@ -24,7 +24,7 @@
                 </template>
 
                 <ElButton @click="importConf">导入配置</ElButton>
-                <ElButton @click="exportConf">导出配置</ElButton>
+                <ElButton @click="exportConf" title="注意：这只会导出配置中的内容。">导出配置</ElButton>
             </ElCard>
 
             <ElCard>
@@ -103,30 +103,6 @@ const importConf = async () => {
             }
         }
 
-        // 导入Prompt文件
-        try {
-            // 确保prompts目录存在
-            await fs.mkdir('prompts', { recursive: true });
-
-            // 删除现有Prompt文件
-            const existingFiles = await fs.readdir('prompts');
-            for (const file of existingFiles) {
-                if (file.endsWith('.txt')) {
-                    await fs.unlink(`prompts/${file}`);
-                }
-            }
-
-            // 写入新的Prompt文件
-            for (const prompt of data.prompts) {
-                if (prompt.name && prompt.content) {
-                    await fs.writeFile(`prompts/${prompt.name}`, prompt.content, 'utf-8');
-                }
-            }
-        } catch (error) {
-            console.error('导入Prompt文件失败:', error);
-            throw new Error('导入Prompt文件失败');
-        }
-
         ElMessage.success('配置导入成功');
         // 刷新页面使新配置生效
         setTimeout(() => location.reload(), 1000);
@@ -163,28 +139,10 @@ const exportConf = async () => {
             }
         }
 
-        // 获取Prompt文件列表及内容
-        const prompts = [];
-        try {
-            const files = await fs.readdir('prompts');
-            for (const file of files) {
-                if (file.endsWith('.txt')) {
-                    const content = await fs.readFile(`prompts/${file}`, 'utf-8');
-                    prompts.push({
-                        name: file,
-                        content: content
-                    });
-                }
-            }
-        } catch (error) {
-            console.error('读取Prompt文件失败:', error);
-        }
-
         const data = {
             version: 1,
-            providers: providers,
-            services: services,
-            prompts: prompts,
+            providers,
+            services,
             exportedAt: new Date().toISOString()
         };
 
