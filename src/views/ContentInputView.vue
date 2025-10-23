@@ -5,17 +5,19 @@
         <template #title>内容录入</template>
         <div class="view">
             <div class="row">
-                <input type="file" ref="fileAdd" multiple v-show="false" @input="onFile(fileAdd.files)" :accept="accept">
+                <input type="file" ref="fileAdd" multiple v-show="false"
+                    @input="(onFile(fileAdd.files), (fileAdd.value = null))" :accept="accept">
                 <ElButton size="small" @click="addFile(0)">添加文件</ElButton>
                 <ElButton size="small" @click="takePhotoDlg.request()">拍照</ElButton>
                 <ElButton size="small" @click="addFile(1)">从相册选择</ElButton>
             </div>
 
-            <div class="row" style="margin-top: 0.5em;">文件列表:</div>
+            <div class="row" style="margin-top: 0.5em;">文件列表(点击以编辑):</div>
             <div class="file-list">
                 <template v-for="(file, index) in fileList" :key="index">
                     <div class="file-item">
-                        <span class="file-name" role="link" tabindex="0" @click.prevent="editImg(index)" @keydown.enter.prevent="editImg(index)">{{ file.name || "图片" }}</span>
+                        <span class="file-name" role="link" tabindex="0" @click.prevent="editImg(index)"
+                            @keydown.enter.prevent="editImg(index)">{{ file.name || "图片" }}</span>
                         <a href="javascript:" @click.prevent="removeFile(index)">×</a>
                     </div>
                 </template>
@@ -32,8 +34,10 @@
             <ElInput type="textarea" :readonly="isInProgress" v-model="resultText" class="result-text" />
             <div v-if="uncertainCount > 0" style="color: red; margin-top: 0.5em;">有 {{ uncertainCount }} 个识别结果无法确定</div>
             <div class="row" style="margin-top: 0.5em; justify-content: flex-end;">
-                <ElCheckbox v-model="ignoreUncertain" v-if="uncertainCount > 0" style="margin-right: 0.5em;">忽略</ElCheckbox>
-                <ElButton type="primary" v-if="!isInProgress" :disabled="(uncertainCount > 0) && !ignoreUncertain" plain @click="submitResult(true)">确定</ElButton>
+                <ElCheckbox v-model="ignoreUncertain" v-if="uncertainCount > 0" style="margin-right: 0.5em;">忽略
+                </ElCheckbox>
+                <ElButton type="primary" v-if="!isInProgress" :disabled="(uncertainCount > 0) && !ignoreUncertain" plain
+                    @click="submitResult(true)">确定</ElButton>
                 <ElButton type="danger" plain @click="submitResult(false)">取消</ElButton>
             </div>
         </DialogView>
@@ -44,7 +48,7 @@
 import { computed, onMounted, ref, nextTick, watch } from 'vue';
 import TakePhotoView from './TakePhotoView.vue';
 import ImageProcessView from './ImageProcessView.vue';
-import { ElPopMessage as ElMessage } from '@/ElPopMessage'
+import { ElPopMessage as ElMessage } from 'el-message-in-popover'
 import { db, fs } from '@/userdata';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 
@@ -110,8 +114,8 @@ const onFile = (files) => {
 const onShot = (photoBlob) => {
     // 创建文件项并自动打开图像处理对话框
     const fileItem = createFileItem(new Blob([photoBlob], { type: 'image/jpeg' }));
-    fileList.value.push(fileItem);
-    
+    // fileList.value.push(fileItem);
+
     // 自动打开图像处理对话框
     nextTick(() => {
         imageProcessDlg.value.process(fileItem.id, fileItem.file);
@@ -132,20 +136,25 @@ const editImg = (index) => {
 
 // 图像处理结果回调
 const onImageProcessResult = (result) => {
+    if (!result || !result.id || !result.result) return ElMessage.error('无效的图像处理结果');
     // 根据ID找到对应的文件项并更新
     const index = fileList.value.findIndex(item => item.id === result.id);
+    const processedFile = new File([result.result], ((index === -1) ? '图片' : fileList.value[index].name), {
+        type: result.result.type,
+        lastModified: Date.now()
+    });
     if (index !== -1) {
         // 创建新的文件项，保持相同的ID
-        const processedFile = new File([result.result], fileList.value[index].name, {
-            type: result.result.type,
-            lastModified: Date.now()
-        });
-        
         fileList.value[index] = {
             ...fileList.value[index],
             file: processedFile
         };
-        
+
+        ElMessage.success('图像处理完成');
+    }
+    else {
+        // 添加新的文件项
+        fileList.value.push(createFileItem(processedFile));
         ElMessage.success('图像处理完成');
     }
 }
@@ -188,7 +197,7 @@ const exec = async () => {
     isInProgress.value = true;
     isSubmited.value = true;
     resultText.value = ''; // 清空之前的结果
-    
+
     // 调用识别接口进行识别(使用@microsoft/fetch-event-source)
     abortController.value = new AbortController();
     try {
@@ -386,7 +395,7 @@ const submitResult = (accept) => {
     flex-direction: column;
 }
 
-:deep(.result-text) > textarea {
+:deep(.result-text)>textarea {
     flex: 1;
     resize: none;
 }

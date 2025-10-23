@@ -170,7 +170,6 @@ const currentProvider = reactive({
     name: '',
     endpoint: '',
     apiKey: '',
-    description: '',
 });
 
 const services = ({
@@ -282,7 +281,6 @@ const handleDeleteProvider = async (index) => {
 const selectPresetProvider = (preset) => {
     currentProvider.name = preset.name;
     currentProvider.endpoint = preset.endpoint;
-    currentProvider.description = preset.description;
     // 滚动到可见区域
     saveProviderBtn.value.ref.scrollIntoView({ behavior: 'smooth' });
 };

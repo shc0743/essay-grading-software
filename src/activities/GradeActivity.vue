@@ -4,18 +4,10 @@
         <ActivityBody style="display: flex; flex-direction: column; height: 100%;">
             <!-- 试题选择 -->
             <div class="question-select-container">
-                <ElSelect 
-                    v-model="selectedQuestion" 
-                    placeholder="请选择试题" 
-                    class="question-select"
-                    :loading="isLoadingQuestions"
-                >
-                    <ElOption 
-                        v-for="question in questions" 
-                        :key="question.filename" 
-                        :label="question.name || question.title || '未命名试题'" 
-                        :value="question.filename"
-                    >
+                <ElSelect v-model="selectedQuestion" placeholder="请选择试题" class="question-select"
+                    :loading="isLoadingQuestions">
+                    <ElOption v-for="question in questions" :key="question.filename"
+                        :label="question.name || question.title || '未命名试题'" :value="question.filename">
                         <div class="option-content">
                             <span class="option-title">{{ question.name || question.title || '未命名试题' }}</span>
                             <span class="option-subtitle">语言: {{ question.lang || '未设置' }}</span>
@@ -30,12 +22,7 @@
                     <span>作文内容</span>
                     <ElButton type="primary" plain size="small" @click="showContentInput = true">录入</ElButton>
                 </div>
-                <ElInput 
-                    type="textarea" 
-                    v-model="essayContent" 
-                    placeholder="请输入或通过录入按钮导入作文内容" 
-                    class="essay-textarea"
-                />
+                <ElInput type="textarea" v-model="essayContent" placeholder="请输入或通过录入按钮导入作文内容" class="essay-textarea" />
             </div>
 
             <!-- 底部功能按钮 -->
@@ -46,23 +33,14 @@
         </ActivityBody>
 
         <!-- 内容录入对话框 -->
-        <ContentInputView
-            v-if="showContentInput"
-            v-model="showContentInput" 
-            prompt_file="ocr-essay-english.txt"
-            @result="handleContentInputResult"
-        />
+        <ContentInputView v-if="showContentInput" v-model="showContentInput" prompt_file="ocr-essay-english.txt"
+            @result="handleContentInputResult" />
 
         <!-- 批改结果对话框 -->
         <DialogView v-model="showGradingResult" class="grading-result-dialog">
             <template #title>批改结果</template>
             <div v-if="isGrading" class="grading-progress">正在批改中，请稍候...</div>
-            <ElInput 
-                v-model="gradingResult" 
-                type="textarea" 
-                :readonly="true" 
-                class="result-textarea"
-            />
+            <ElInput v-model="gradingResult" type="textarea" :readonly="true" class="result-textarea" />
             <div class="dialog-footer">
                 <ElButton type="primary" plain @click="closeGradingResult">确定</ElButton>
             </div>
@@ -72,7 +50,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue';
-import { ElPopMessage as ElMessage } from '@/ElPopMessage'
+import { ElPopMessage as ElMessage } from 'el-message-in-popover'
 import ContentInputView from '../views/ContentInputView.vue';
 import { fs, db } from '@/userdata';
 import { fetchEventSource } from '@microsoft/fetch-event-source';
@@ -115,10 +93,10 @@ const loadQuestions = async () => {
         isLoadingQuestions.value = true;
         // 确保目录存在
         await fs.mkdir('user/questions', { recursive: true });
-        
+
         // 读取目录下的所有文件
         const files = await fs.readdir('user/questions');
-        
+
         // 过滤出 .json 文件并按数字降序排序
         const jsonFiles = files
             .filter(file => file.endsWith('.json'))
@@ -258,7 +236,7 @@ const executeGrading = async () => {
             onerror: e => { throw e },
             signal: abortController.value.signal,
         });
-        
+
         ElMessage.success('批改成功');
     } catch (error) {
         console.error('批改失败:', error);
@@ -325,8 +303,8 @@ const closeGradingResult = () => {
 }
 
 .grading-result-dialog {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
 }
 
 .grading-progress {
@@ -335,7 +313,8 @@ const closeGradingResult = () => {
     color: #606266;
 }
 
-.essay-textarea, .result-textarea {
+.essay-textarea,
+.result-textarea {
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -347,7 +326,7 @@ const closeGradingResult = () => {
     margin-top: 16px;
 }
 
-:deep(.essay-textarea) textarea ,
+:deep(.essay-textarea) textarea,
 :deep(.result-textarea) textarea {
     resize: none;
     flex: 1;

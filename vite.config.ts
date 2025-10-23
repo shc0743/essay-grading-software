@@ -28,6 +28,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  optimizeDeps: {
+    include: ['element-plus/es/components/**/*'],
+  },
   build: {
     sourcemap: true,
     chunkSizeWarningLimit: 1500,
@@ -38,6 +41,8 @@ export default defineConfig({
       },
       output: {
         manualChunks(id) {
+          if (id.includes('userdata')) return 'userdata'
+          if (id.includes('config')) return 'config'
           /*if (id.includes('node_modules')) {
             if (id.includes('element-plus')) {
               return 'element-plus'

@@ -5,7 +5,7 @@
             <div class="prompt-management">
                 <!-- 操作工具栏 -->
                 <div class="toolbar">
-                    <el-button type="primary" @click="handleCreate" :icon="Plus">
+                    <el-button type="primary" plain @click="handleCreate" :icon="Plus">
                         新建Prompt
                     </el-button>
                     <el-button @click="refreshPromptList" :icon="Refresh">
@@ -36,7 +36,7 @@
                                 <el-button size="small" @click="handleEdit(row)" :icon="Edit">
                                     编辑
                                 </el-button>
-                                <el-button size="small" type="danger" @click="handleDelete(row)" :icon="Delete">
+                                <el-button size="small" type="danger" plain @click="handleDelete(row)" :icon="Delete">
                                     删除
                                 </el-button>
                             </template>
@@ -47,7 +47,7 @@
                 <!-- 空状态 -->
                 <div v-if="promptList.length === 0" class="empty-state">
                     <el-empty description="暂无Prompt文件">
-                        <el-button type="primary" @click="handleCreate">创建第一个Prompt</el-button>
+                        <el-button type="primary" plain @click="handleCreate">创建第一个Prompt</el-button>
                     </el-empty>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                     </div>
                     <div class="dialog-actions">
                         <el-button @click="handleDialogClose" class="action-button">取消</el-button>
-                        <el-button type="primary" @click="handleSave" class="action-button">
+                        <el-button type="primary" plain @click="handleSave" class="action-button">
                             {{ isEditing ? '保存' : '创建' }}
                         </el-button>
                     </div>

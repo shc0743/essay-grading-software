@@ -38,8 +38,8 @@
         </div>
 
       </div>
-      
-      <div>分辨率: {{fbl.w}}x{{fbl.h}}</div>
+
+      <div>分辨率: {{ fbl.w }}x{{ fbl.h }}</div>
     </div>
   </DialogView>
 </template>
@@ -49,7 +49,7 @@ import { nextTick, ref, reactive, watch } from 'vue'
 import { ElSelect, ElOption, ElButton, ElIcon } from 'element-plus'
 import { VideoCamera, Warning } from '@element-plus/icons-vue'
 import { useDevicesList } from '@vueuse/core'
-import { ElPopMessage as ElMessage } from '@/ElPopMessage'
+import { ElPopMessage as ElMessage } from 'el-message-in-popover'
 
 const dialogVisible = ref(false)
 const cameraDevices = ref([])
@@ -73,8 +73,8 @@ const props = defineProps({
 const request = async () => {
   dialogVisible.value = true
   await nextTick()
-  
-  const devs = useDevicesList({
+
+  let devs = useDevicesList({
     requestPermissions: true,
     constraints: { video: true, audio: false }
   })
@@ -85,7 +85,14 @@ const request = async () => {
     ElMessage.error('需要摄像头权限')
     return
   }
-  
+
+  // 修复第一次打开获取不到设备的问题
+  devs = useDevicesList({
+    requestPermissions: true,
+    constraints: { video: true, audio: false }
+  })
+  await devs.ensurePermissions()
+
   cameraDevices.value = devs.videoInputs.value
 
   permissionDenied.value = false
@@ -105,7 +112,7 @@ const startCamera = async (deviceId) => {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: {
         deviceId: deviceId ? { exact: deviceId } : undefined,
-        width: { ideal: 4096 }, height: { ideal: 2160 } 
+        width: { ideal: 4096 }, height: { ideal: 2160 }
       }
     })
     const track = stream.getVideoTracks()[0];
