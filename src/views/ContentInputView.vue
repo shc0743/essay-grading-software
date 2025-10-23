@@ -111,7 +111,7 @@ const onShot = (photoBlob) => {
     // 创建文件项并自动打开图像处理对话框
     const fileItem = createFileItem(new Blob([photoBlob], { type: 'image/jpeg' }));
     // fileList.value.push(fileItem);
-    
+
     // 自动打开图像处理对话框
     nextTick(() => {
         imageProcessDlg.value.process(fileItem.id, fileItem.file);
@@ -134,23 +134,22 @@ const editImg = (index) => {
 const onImageProcessResult = (result) => {
     // 根据ID找到对应的文件项并更新
     const index = fileList.value.findIndex(item => item.id === result.id);
+    const processedFile = new File([result.result], fileList.value[index].name, {
+        type: result.result.type,
+        lastModified: Date.now()
+    });
     if (index !== -1) {
         // 创建新的文件项，保持相同的ID
-        const processedFile = new File([result.result], fileList.value[index].name, {
-            type: result.result.type,
-            lastModified: Date.now()
-        });
-        
         fileList.value[index] = {
             ...fileList.value[index],
             file: processedFile
         };
-        
+
         ElMessage.success('图像处理完成');
     }
     else {
         // 添加新的文件项
-        fileList.value.push((result));
+        fileList.value.push(createFileItem(processedFile));
         ElMessage.success('图像处理完成');
     }
 }
@@ -193,7 +192,7 @@ const exec = async () => {
     isInProgress.value = true;
     isSubmited.value = true;
     resultText.value = ''; // 清空之前的结果
-    
+
     // 调用识别接口进行识别(使用@microsoft/fetch-event-source)
     abortController.value = new AbortController();
     try {
