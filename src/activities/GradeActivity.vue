@@ -325,8 +325,8 @@ const closeGradingResult = () => {
 }
 
 .grading-result-dialog {
-    width: 80%;
-    height: 80%;
+    width: 100%;
+    height: 100%;
 }
 
 .grading-progress {
