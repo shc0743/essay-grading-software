@@ -11,7 +11,7 @@
                 <ElButton size="small" @click="addFile(1)">从相册选择</ElButton>
             </div>
 
-            <div class="row" style="margin-top: 0.5em;">文件列表:</div>
+            <div class="row" style="margin-top: 0.5em;">文件列表(点击以编辑):</div>
             <div class="file-list">
                 <template v-for="(file, index) in fileList" :key="index">
                     <div class="file-item">
@@ -110,7 +110,7 @@ const onFile = (files) => {
 const onShot = (photoBlob) => {
     // 创建文件项并自动打开图像处理对话框
     const fileItem = createFileItem(new Blob([photoBlob], { type: 'image/jpeg' }));
-    fileList.value.push(fileItem);
+    // fileList.value.push(fileItem);
     
     // 自动打开图像处理对话框
     nextTick(() => {
@@ -146,6 +146,11 @@ const onImageProcessResult = (result) => {
             file: processedFile
         };
         
+        ElMessage.success('图像处理完成');
+    }
+    else {
+        // 添加新的文件项
+        fileList.value.push((result));
         ElMessage.success('图像处理完成');
     }
 }
