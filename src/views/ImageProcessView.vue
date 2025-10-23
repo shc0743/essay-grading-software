@@ -35,13 +35,13 @@
         </div>
 
         <div class="action-buttons">
-          <button @click="rotate(-90)" class="btn">向左旋转</button>
-          <button @click="rotate(90)" class="btn">向右旋转</button>
-          <button @click="zoom(0.1)" class="btn">放大</button>
-          <button @click="zoom(-0.1)" class="btn">缩小</button>
-          <button @click="reset" class="btn">重置</button>
-          <button @click="processImage" class="btn primary">确认处理</button>
-          <button @click="cancel" class="btn secondary">取消</button>
+          <ElButton @click="rotate(-90)">向左旋转</ElButton>
+          <ElButton @click="rotate(90)">向右旋转</ElButton>
+          <ElButton @click="zoom(0.1)">放大</ElButton>
+          <ElButton @click="zoom(-0.1)">缩小</ElButton>
+          <ElButton @click="reset">重置</ElButton>
+          <ElButton @click="processImage" type="primary" plain style="--color: var(--el-color-primary)"><ElIcon><ISelect /></ElIcon></ElButton>
+          <ElButton @click="cancel" type="danger" plain style="--color: var(--el-color-danger)"><ElIcon><CloseBold /></ElIcon></ElButton>
         </div>
       </div>
     </div>
@@ -52,6 +52,7 @@
 import { ref, computed, nextTick } from 'vue';
 import VuePictureCropper, { cropper } from 'vue-picture-cropper';
 import { ElPopMessage as ElMessage } from '@/ElPopMessage'
+import { CloseBold, Select as ISelect } from '@element-plus/icons-vue';
 
 const emit = defineEmits(['update:modelValue', 'result']);
 
@@ -215,6 +216,7 @@ defineExpose({
 
 .toolbar {
   padding: 16px;
+  padding-bottom: 0;
   background: white;
   border-top: 1px solid #e0e0e0;
   display: flex;
