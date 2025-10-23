@@ -40,8 +40,16 @@
           <ElButton @click="zoom(0.1)">放大</ElButton>
           <ElButton @click="zoom(-0.1)">缩小</ElButton>
           <ElButton @click="reset">重置</ElButton>
-          <ElButton @click="processImage" type="primary" plain style="--color: var(--el-color-primary)"><ElIcon><ISelect /></ElIcon></ElButton>
-          <ElButton @click="cancel" type="danger" plain style="--color: var(--el-color-danger)"><ElIcon><CloseBold /></ElIcon></ElButton>
+          <ElButton @click="processImage" type="primary" plain style="--color: var(--el-color-primary)">
+            <ElIcon>
+              <ISelect />
+            </ElIcon>
+          </ElButton>
+          <ElButton @click="cancel" type="danger" plain style="--color: var(--el-color-danger)">
+            <ElIcon>
+              <CloseBold />
+            </ElIcon>
+          </ElButton>
         </div>
       </div>
     </div>
@@ -51,7 +59,7 @@
 <script setup>
 import { ref, computed, nextTick } from 'vue';
 import VuePictureCropper, { cropper } from 'vue-picture-cropper';
-import { ElPopMessage as ElMessage } from '@/ElPopMessage'
+import { ElPopMessage as ElMessage } from 'el-message-in-popover'
 import { CloseBold, Select as ISelect } from '@element-plus/icons-vue';
 
 const emit = defineEmits(['update:modelValue', 'result']);
