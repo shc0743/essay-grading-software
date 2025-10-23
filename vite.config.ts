@@ -28,6 +28,9 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  optimizeDeps: {
+    include: ['element-plus/es/components/**/*'],
+  },
   build: {
     sourcemap: true,
     chunkSizeWarningLimit: 1500,
