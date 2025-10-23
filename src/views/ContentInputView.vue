@@ -5,7 +5,7 @@
         <template #title>内容录入</template>
         <div class="view">
             <div class="row">
-                <input type="file" ref="fileAdd" multiple v-show="false" @input="onFile(fileAdd.files)" :accept="accept">
+                <input type="file" ref="fileAdd" multiple v-show="false" @input="(onFile(fileAdd.files), (fileAdd.value = null))" :accept="accept">
                 <ElButton size="small" @click="addFile(0)">添加文件</ElButton>
                 <ElButton size="small" @click="takePhotoDlg.request()">拍照</ElButton>
                 <ElButton size="small" @click="addFile(1)">从相册选择</ElButton>
