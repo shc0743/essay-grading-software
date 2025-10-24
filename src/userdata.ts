@@ -3,7 +3,7 @@ import type { IDBPDatabase, IDBPTransaction } from 'idb';
 
 // config
 export const db_name = app_name_id + '_web-data_'// + globalThis.location.pathname.replace(/(\/|\\|\:|\;|\"|\'|\+|\=|\[|\]|\(|\)|\,|\.)/g, '_');
-export const version = 2;
+export const version = 3;
 
 
 import { openDB, unwrap } from 'idb';
@@ -35,6 +35,10 @@ const dbUpgrade: Record<number, UpgradeFunction> = {
     },
     1(db, t, old) {
         db.createObjectStore('files');
+    },
+    2(db, t, old) {
+        db.createObjectStore('tmp');
+        db.createObjectStore('cache');
     },
 };
 

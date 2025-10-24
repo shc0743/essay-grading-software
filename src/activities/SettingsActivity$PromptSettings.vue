@@ -5,12 +5,9 @@
             <div class="prompt-management">
                 <!-- 操作工具栏 -->
                 <div class="toolbar">
-                    <el-button type="primary" plain @click="handleCreate" :icon="Plus">
-                        新建Prompt
-                    </el-button>
-                    <el-button @click="refreshPromptList" :icon="Refresh">
-                        刷新
-                    </el-button>
+                    <el-button type="primary" plain @click="handleCreate" :icon="Plus">新建Prompt</el-button>
+                    <el-button @click="refreshPromptList" :icon="Refresh">刷新</el-button>
+                    <el-button @click="resetPrompts" type="danger" plain :icon="Close">恢复默认</el-button>
                 </div>
 
                 <!-- Prompt列表 -->
@@ -91,10 +88,11 @@
 </template>
 
 <script setup>
-import { fs } from '@/userdata';
+import { db, fs } from '@/userdata';
 import { onMounted, ref, reactive } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { Plus, Refresh, Edit, Delete } from '@element-plus/icons-vue';
+import { ElMessageBox } from 'element-plus';
+import { ElPopMessage as ElMessage } from 'el-message-in-popover'
+import { Plus, Refresh, Edit, Delete, Close } from '@element-plus/icons-vue';
 
 const pageTitle = ref('Prompt 管理');
 
@@ -154,6 +152,29 @@ const refreshPromptList = async () => {
         ElMessage.error('获取Prompt列表失败');
     }
 };
+
+const resetPrompts = async () => {
+    try {
+        await ElMessageBox.confirm(
+            '确定要恢复默认Prompt吗？此操作将恢复预设Prompt为默认值。',
+            '确认重置',
+            {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning',
+            }
+        );
+        await db.delete('config', 'prompt.version.lock');
+        ElMessage.success('操作成功，刷新页面后生效。')
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+    } catch (error) {
+        if (error !== 'cancel') {
+            ElMessage.error('操作失败: ' + error);
+        }
+    }
+}
 
 const handleCreate = () => {
     isEditing.value = false;
@@ -245,6 +266,8 @@ const formatDate = (date) => {
 
 .toolbar {
     margin-bottom: 20px;
+    display: flex;
+    overflow: auto;
 }
 
 .prompt-list {

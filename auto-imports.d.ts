@@ -6,5 +6,5 @@
 // biome-ignore lint: disable
 export {}
 declare global {
-
+  const ElMess: typeof import('element-plus/es').ElMess
 }
