@@ -148,8 +148,7 @@ const refreshPromptList = async () => {
 
         promptList.value = prompts;
     } catch (error) {
-        console.error('获取Prompt列表失败:', error);
-        ElMessage.error('获取Prompt列表失败');
+        ElMessage.error('获取Prompt列表失败: ' + error);
     }
 };
 
@@ -209,8 +208,7 @@ const handleDelete = async (prompt) => {
         await refreshPromptList();
     } catch (error) {
         if (error !== 'cancel') {
-            console.error('删除Prompt失败:', error);
-            ElMessage.error('删除失败');
+            ElMessage.error('删除失败: ' + error);
         }
     }
 };
@@ -236,8 +234,7 @@ const handleSave = async () => {
         dialogVisible.value = false;
         await refreshPromptList();
     } catch (error) {
-        console.error('保存Prompt失败:', error);
-        ElMessage.error('保存失败');
+        ElMessage.error('保存失败: ' + error);
     }
 };
 

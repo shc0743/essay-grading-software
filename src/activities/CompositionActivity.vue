@@ -119,7 +119,6 @@ const loadQuestions = async () => {
                     createTime: data.createTime || new Date(file.numericId).toLocaleString()
                 });
             } catch (error) {
-                console.error(`读取文件 ${file.filename} 失败:`, error);
                 // 如果读取失败，至少显示文件名
                 questions.value.push({
                     filename: file.filename,
@@ -128,8 +127,7 @@ const loadQuestions = async () => {
             }
         }
     } catch (error) {
-        console.error('加载试题列表失败:', error);
-        ElMessage.error('加载试题列表失败');
+        ElMessage.error('加载试题列表失败:' + error);
     }
 };
 
@@ -169,7 +167,6 @@ const confirmDeleteQuestion = async (filename: string) => {
         await deleteQuestion(filename);
     } catch (error) {
         // 用户取消删除
-        console.log('取消删除试题:', filename);
     }
 };
 
@@ -180,8 +177,7 @@ const deleteQuestion = async (filename: string) => {
         ElMessage.success('删除试题成功');
         await loadQuestions(); // 重新加载试题列表
     } catch (error) {
-        console.error('删除试题失败:', error);
-        ElMessage.error('删除试题失败');
+        ElMessage.error('删除试题失败: ' + error);
     }
 };
 </script>

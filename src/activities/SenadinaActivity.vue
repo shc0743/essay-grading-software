@@ -47,8 +47,7 @@ async function decryptText(encryptedBase64: string, password: string): Promise<s
         
         return new TextDecoder().decode(decrypted);
     } catch (error) {
-        console.error('解密失败:', error);
-        return '解密失败';
+        return '解密失败: ' + error;
     }
 }
 

@@ -110,7 +110,7 @@ const process = async (file_id, file) => {
 
 // 裁剪器准备就绪
 const onCropperReady = () => {
-  // console.log('Cropper is ready');
+
 };
 
 // 更新裁剪比例

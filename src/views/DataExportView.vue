@@ -38,7 +38,6 @@ async function importConf() {
         await importData(value);
     } catch (e) {
         if (e === 'cancel') return;
-        console.error('导入配置失败:', e);
         ElMessage.error('导入失败: ' + String(e));
     }
 }
@@ -76,7 +75,7 @@ async function importData(dataStr: string) {
     const data = JSON.parse(dataStr);
 
     // 验证数据格式
-    if (!data.version || !data.providers || !data.services || !data.prompts) {
+    if (!data.version || !data.providers || !data.services) {
         throw new Error('无效的配置数据格式');
     }
 
