@@ -148,7 +148,8 @@
 
 <script setup>
 import { onMounted, ref, reactive, computed } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessageBox } from 'element-plus';
+import { ElPopMessage as ElMessage } from 'el-message-in-popover';
 import { Plus, Edit, Delete } from '@element-plus/icons-vue';
 import { db } from '@/userdata';
 
@@ -234,7 +235,7 @@ const loadServiceConfig = async () => {
             }
         }
     } catch (error) {
-        console.error('加载服务配置失败:', error);
+        ElMessage.error('加载服务配置失败' + error);
     }
 };
 

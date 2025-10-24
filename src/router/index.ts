@@ -60,6 +60,10 @@ const router = createRouter({
       path: '/compose/edit/:filename?',
       component: () => import('@/activities/CompositionActivity$EditQuestion.vue'),
     },
+    {
+      path: '/grade/legacy/',
+      component: () => import('@/activities/GradeActivity$GradeLegacy.vue'),
+    },
   ],
 })
 
